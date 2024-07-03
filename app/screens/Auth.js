@@ -1,60 +1,51 @@
 import React, { useState } from 'react';
 import { Text, StyleSheet, View, TextInput, TouchableOpacity } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { AntDesign } from '@expo/vector-icons';
-import axios from 'axios';
+import { useUser } from '../../contexts/UserContext';
 
 const Auth = ({ navigation }) => {
-    const [phoneNumber, setPhoneNumber] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('+7');
     const [password, setPassword] = useState('');
-    const [rememberMe, setRememberMe] = useState(false);
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const [error, setError] = useState('');
 
+    const { setUserData } = useUser();
+
     const signIn = async () => {
         try {
-            const response = await axios.post('http://157.245.123.144:8001/api/users/login/', {
-                phone_number: phoneNumber,
-                password: password,
-            }, {
+            const response = await fetch('http://157.245.123.144:8001/api/users/login/', {
+                method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
-                }
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    phone_number: phoneNumber,
+                    password: password,
+                }),
             });
-    
-            if (response.status === 200) {
-                const { token } = response.data;
-    
-                if (token) {
-                    await AsyncStorage.setItem('token', token);
-                } else {
-                    await AsyncStorage.removeItem('token'); // Удаление ключа 'token', если токен отсутствует или пустой
-                }
-    
-                if (rememberMe) {
-                    await AsyncStorage.setItem('rememberMe', 'true');
-                } else {
-                    await AsyncStorage.removeItem('rememberMe');
-                }
+
+            const data = await response.json();
+            if (response.ok) {
+                console.log('Успешный вход:', data);
+                setUserData({
+                    user: data.user,
+                    tokens: {
+                        refresh: data.refresh,
+                        access: data.access
+                    }
+                });
                 navigation.navigate('Cabinet');
             } else {
                 setError(true);
+                throw new Error(json.message || 'Не удалось войти');
             }
         } catch (error) {
-            console.error('Ошибка входа:', error);
-            setError(true);
+            throw new Error(json.message || 'Не удалось войти');
         }
     };
-    
 
-
-    const toggleRememberMe = () => {
-        setRememberMe(!rememberMe);
-    };
-
-    const togglePasswordVisibility = () => {
-        setIsPasswordVisible(!isPasswordVisible);
-    };
+    // const togglePasswordVisibility = () => {
+    //     setIsPasswordVisible(!isPasswordVisible);
+    // };
 
     return (
         <View style={styles.container}>
@@ -79,15 +70,6 @@ const Auth = ({ navigation }) => {
                         autoCapitalize='none'
                         autoCorrect={false}
                     />
-                    <TouchableOpacity onPress={togglePasswordVisibility} style={styles.eyeIcon}>
-                        <AntDesign name={isPasswordVisible ? "eyeo" : "eye"} size={24} color="black" />
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.checkboxContainer}>
-                    <TouchableOpacity onPress={toggleRememberMe} style={styles.checkbox}>
-                        {rememberMe && <View style={styles.checkboxInner} />}
-                    </TouchableOpacity>
-                    <Text style={styles.checkboxLabel}>Запомнить аккаунт</Text>
                 </View>
                 <TouchableOpacity style={styles.button} onPress={signIn}>
                     <Text style={styles.buttonText}>Войти</Text>

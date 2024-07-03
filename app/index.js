@@ -11,6 +11,8 @@ import Registration from './screens/Registration';
 import HomeScreen from './screens/HomeScreen';
 import TransfersScreen from './screens/TransfersScreen';
 
+import { UserProvider } from '../contexts/UserContext'
+
 // Auth stack
 const AuthStack = createStackNavigator(
   {
@@ -80,7 +82,9 @@ const AppContainer = createAppContainer(RootNavigator);
 
 const App = () => {
   return (
-    <AppContainer />
+    <UserProvider>
+      <AppContainer />
+    </UserProvider>
   );
 };
 
