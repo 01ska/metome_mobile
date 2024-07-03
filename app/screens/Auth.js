@@ -59,6 +59,8 @@ const Auth = ({ navigation }) => {
                     keyboardType='phone-pad'
                     autoCapitalize='none'
                     autoCorrect={false}
+                    placeholderTextColor="#000"
+                    
                 />
                 <View style={styles.passwordContainer}>
                     <TextInput
@@ -69,6 +71,7 @@ const Auth = ({ navigation }) => {
                         secureTextEntry={!isPasswordVisible}
                         autoCapitalize='none'
                         autoCorrect={false}
+                        placeholderTextColor="#000"
                     />
                 </View>
                 <TouchableOpacity style={styles.button} onPress={signIn}>

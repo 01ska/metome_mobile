@@ -1,10 +1,12 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { useUser } from '../../contexts/UserContext'
 
 const HomeScreen = () => {
+  const { userData } = useUser();
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Главная страница</Text>
+      <Text style={styles.text}>С возращением {userData.user.first_name}</Text>
     </View>
   );
 };

@@ -9,13 +9,12 @@ const defaultProfileImage = 'https://www.example.com/default-profile.png';
 
 const Cabinet = () => {
 
-    const { userData, setUserData } = useUser();
+    const { userData } = useUser();
 
     return (
         <View style={styles.container}>
             <View style={styles.profileContainer}>
                 <Text style={styles.profileText}>{userData.user.first_name} {userData.user.last_name} {userData.user.middle_name}</Text>
-                <Text style={styles.profileText}>{userData.user.date_of_birth}</Text>
             </View>
             <View style={styles.inputContainer}>
                 <View style={styles.inputRow}>
@@ -25,9 +24,22 @@ const Cabinet = () => {
                         value={userData.user.phone_number}
                         editable={false}
                     />
-                    <TouchableOpacity style={styles.editIcon}>
-                        <AntDesign name="edit" size={24} color="black" />
-                    </TouchableOpacity>
+                </View>
+                <View style={styles.inputRow}>
+                    <Text style={styles.label}>ИИН:</Text>
+                    <TextInput
+                        style={styles.input}
+                        value={userData.user.iin}
+                        editable={false}
+                    />
+                </View>
+                <View style={styles.inputRow}>
+                    <Text style={styles.label}>Дата рождения:</Text>
+                    <TextInput
+                        style={styles.input}
+                        value={userData.user.date_of_birth}
+                        editable={false}
+                    />
                 </View>
             </View>
         </View>
@@ -67,26 +79,20 @@ const styles = StyleSheet.create({
     },
     inputContainer: {
         width: '90%',
+        marginTop: 30,
     },
     inputRow: {
         flexDirection: 'row',
-        alignItems: 'center',
         marginBottom: 20,
-        borderBottomWidth: 1,
-        borderColor: '#ccc',
         paddingBottom: 5,
     },
     label: {
         fontSize: 16,
-        width: '25%',
+        width: '50%',
     },
     input: {
         fontSize: 16,
-        width: '55%',
-    },
-    editIcon: {
-        width: '15%',
-        alignItems: 'center',
+        width: '50%',
     },
 });
 
