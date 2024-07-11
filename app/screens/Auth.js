@@ -3,8 +3,8 @@ import { Text, StyleSheet, View, TextInput, TouchableOpacity } from 'react-nativ
 import { useUser } from '../../contexts/UserContext';
 
 const Auth = ({ navigation }) => {
-    const [phoneNumber, setPhoneNumber] = useState('+7');
-    const [password, setPassword] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('+77477686514');
+    const [password, setPassword] = useState('rtU339');
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const [error, setError] = useState('');
 

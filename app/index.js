@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
+import AppLoading from 'expo-app-loading';
 
 import Auth from './screens/Auth';
 import Cabinet from './screens/Cabinet';
@@ -10,8 +11,20 @@ import Help from './screens/Help';
 import Registration from './screens/Registration';
 import HomeScreen from './screens/HomeScreen';
 import TransfersScreen from './screens/TransfersScreen';
-
+import * as SplashScreen from 'expo-splash-screen';
 import { UserProvider } from '../contexts/UserContext'
+SplashScreen.preventAutoHideAsync();
+
+import * as Font from 'expo-font';
+
+const loadFonts = async () => {
+  await Font.loadAsync({
+    'Montserrat-Regular': require('../assets/fonts/Montserrat-Regular.ttf'),
+    'Montserrat-Medium': require('../assets/fonts/Montserrat-Medium.ttf'),
+    'Montserrat-SemiBold': require('../assets/fonts/Montserrat-SemiBold.ttf'),
+    'Montserrat-Bold': require('../assets/fonts/Montserrat-Bold.ttf'),
+  });
+};
 
 // Auth stack
 const AuthStack = createStackNavigator(
@@ -81,11 +94,27 @@ const RootNavigator = createSwitchNavigator(
 const AppContainer = createAppContainer(RootNavigator);
 
 const App = () => {
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+
+  useEffect(() => {
+    const fetchFonts = async () => {
+      await loadFonts();
+      setFontsLoaded(true);
+      await SplashScreen.hideAsync();
+    };
+
+    fetchFonts();
+  }, []);
+
+  if (!fontsLoaded) {
+    return null;
+  }
   return (
     <UserProvider>
       <AppContainer />
     </UserProvider>
   );
 };
+
 
 export default App;
