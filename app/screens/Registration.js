@@ -3,26 +3,24 @@ import { View, StyleSheet, Text } from 'react-native';
 import { Input, Button } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
 import { TextInputMask } from 'react-native-masked-text';
+import { useUser } from '../../contexts/UserContext';
 
-const Registration = () => {
-    const [phoneNumber, setPhoneNumber] = useState('+7');
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
+const Registration = ({ navigation }) => {
+    const [phoneNumber, setPhoneNumber] = useState('+77787244009');
+    const [iin, setIin] = useState('050408551323');
+    const [firstName, setFirstName] = useState('Искандер');
+    const [lastName, setLastName] = useState('Кудайберген');
     const [middleName, setMiddleName] = useState('');
-    const [password, setPassword] = useState('');
-    const [dateOfBirth, setDateOfBirth] = useState('');
+    const [password, setPassword] = useState('12345678');
+    const [dateOfBirth, setDateOfBirth] = useState('2005-04-08');
 
     const [error, setError] = useState('');
     const [keyError, setKeyError] = useState('');
 
-    const navigation = useNavigation();
+    const { setUserData } = useUser();
 
-    const cleanPhoneNumber = (number) => {
-        return number.replace(/[^\d]/g, '');
-    };
 
     const handleRegister = async () => {
-        const cleanedPhoneNumber = cleanPhoneNumber(phoneNumber);
 
         try {
             const response = await fetch('http://157.245.123.144:8001/api/users/register/', {
@@ -31,7 +29,8 @@ const Registration = () => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    phone_number: cleanedPhoneNumber,
+                    phone_number: phoneNumber,
+                    iin: iin,
                     first_name: firstName,
                     last_name: lastName,
                     middle_name: middleName,
@@ -43,7 +42,14 @@ const Registration = () => {
             const data = await response.json();
             if (response.ok) {
                 console.log('Регистрация успешна:', data);
-                navigation.replace('Profile');
+                setUserData({
+                    user: data.user,
+                    tokens: {
+                        refresh: data.refresh,
+                        access: data.access
+                    }
+                });
+                navigation.navigate('Cabinet');
             } else {
                 const errorKey = Object.keys(data)[0];
                 const errorMessage = data[errorKey][0];
@@ -71,6 +77,7 @@ const Registration = () => {
                 style={styles.input}
                 placeholder="Номер телефона"
             />
+            <Input placeholder="ИИН" value={iin} onChangeText={setIin} style={styles.input} />
             <Input placeholder="Имя" value={firstName} onChangeText={setFirstName} style={styles.input} />
             <Input placeholder="Фамилия" value={lastName} onChangeText={setLastName} style={styles.input} />
             <Input placeholder="Отчество (необязательно)" value={middleName} onChangeText={setMiddleName} style={styles.input} />
