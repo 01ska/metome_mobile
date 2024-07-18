@@ -11,8 +11,9 @@ import Help from './screens/Help';
 import Registration from './screens/Registration';
 import HomeScreen from './screens/HomeScreen';
 import TransfersScreen from './screens/TransfersScreen';
+import SavingsScreen from './screens/SavingsScreen'; // Импортируем экран "Накопления"
 import * as SplashScreen from 'expo-splash-screen';
-import { UserProvider } from '../contexts/UserContext'
+import { UserProvider } from '../contexts/UserContext';
 SplashScreen.preventAutoHideAsync();
 
 import * as Font from 'expo-font';
@@ -57,6 +58,15 @@ const MainStack = createMaterialBottomTabNavigator(
         tabBarLabel: 'Переводы',
         tabBarIcon: ({ tintColor }) => (
           <MaterialIcons name="swap-horiz" size={20} color={tintColor} />
+        )
+      }
+    },
+    Savings: {
+      screen: SavingsScreen,
+      navigationOptions: {
+        tabBarLabel: 'Накопления',
+        tabBarIcon: ({ tintColor }) => (
+          <MaterialIcons name="savings" size={20} color={tintColor} />
         )
       }
     },
@@ -115,6 +125,5 @@ const App = () => {
     </UserProvider>
   );
 };
-
 
 export default App;
